@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # User management URLs
@@ -15,4 +16,12 @@ urlpatterns = [
     path('api/products/create/', views.ProductCreate.as_view(), name='product-create'),  # Create a product
     path('api/products/update/<int:pk>/', views.ProductUpdate.as_view(), name='product-update'),  # Update a product
     path('api/products/delete/<int:pk>/', views.ProductDelete.as_view(), name='product-delete'),  # Delete a product
+
+    # Authentication URLs
+    path('signup/', views.signup, name='signup'),
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    # Dashboard
+    path('', views.user_dashboard, name='user_dashboard'),
 ]

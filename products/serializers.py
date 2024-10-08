@@ -5,17 +5,23 @@ from .models import CustomUser, Product
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_of_birth', 'profile_photo']
+        fields = ['id', 'username', 'email', 'password']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True}  # Ensure password is not exposed in read operations
         }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
+        # Use the set_password method to properly hash the password
+        user = CustomUser.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])  # Proper password hashing
+        user.save()
         return user
 
 # Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'category', 'price', 'description', 'stock_quantity']
+        fields = '__all__'
