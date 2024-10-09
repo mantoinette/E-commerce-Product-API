@@ -141,3 +141,16 @@ def home(request):
 # Product List View for TemplateView
 class ProductListView(TemplateView):
     template_name = 'product_list.html'
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])  # Hash the password
+            user.save()
+            return redirect('login')
+    else:
+        form = SignupForm()
+    return render(request, 'products/signup.html', {'form': form})
