@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Welcome to Your Dashboard</h1>
+{% extends "base.html" %}
 
-    <div class="dashboard-options">
-        <ul>
-            <li><a href="{% url 'product-list' %}">View Products</a></li>
-            <li><a href="{% url 'product-create' %}">Add New Product</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
-    </div>
+{% block content %}
+    <h2>Welcome, {{ request.user.username }}</h2>
 
-    <footer>
-        <p>&copy; 2024 E-Commerce App</p>
-    </footer>
-</body>
-</html>
+    <h3>Your Orders</h3>
+    <ul>
+        {% for order in orders %}
+            <li>{{ order.product.name }} - Quantity: {{ order.quantity }}</li>
+        {% empty %}
+            <li>You have no orders.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Products</h3>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }} - {{ product.price }} USD</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,16 +1,38 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import EmailValidator
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
+
+# Custom User Model
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(
+        _('email address'),
+        unique=True,
+        validators=[EmailValidator(message="Enter a valid email address")],
+        error_messages={
+            'unique': _("A user with this email already exists."),
+        },
+    )
+
+    USERNAME_FIELD = 'email'  # Use email as the unique identifier for login
+    REQUIRED_FIELDS = ['username']  # Username is still required
 
     def __str__(self):
-        return self.username
+        return self.email
 
     class Meta:
         permissions = [
+            # Admin
+            ("can_manage_everything", "Can manage everything in the system"),
+
+            # Product Manager Permissions
+            ("can_manage_products", "Can manage products (add, edit, delete)"),
+
+            # Content Editor Permissions
+            ("can_edit_content", "Can edit content but cannot delete"),
+
             # Sales Manager Permissions
             ("can_manage_discounts", "Can manage discounts"),
             ("can_manage_orders", "Can manage orders"),
@@ -18,14 +40,14 @@ class CustomUser(AbstractUser):
 
             # Customer Support Permissions
             ("can_view_customer_info", "Can view customer information"),
-            ("can_assist_issues", "Can assist with issues"),
+            ("can_assist_issues", "Can assist with customer issues"),
             ("can_view_orders", "Can view orders"),
 
             # Viewer Permissions
-            ("can_read_only", "Can read-only access"),
+            ("can_read_only", "Can only view data"),
 
             # Marketing Permissions
-            ("can_manage_promotions", "Can manage promotions"),
+            ("can_manage_promotions", "Can manage promotions and discounts"),
             ("can_manage_product_visibility", "Can manage product visibility"),
 
             # Warehouse Manager Permissions
@@ -34,6 +56,7 @@ class CustomUser(AbstractUser):
         ]
 
 
+# Category Model
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -43,11 +66,11 @@ class Category(models.Model):
 
     class Meta:
         permissions = [
-            # Viewer Permissions for Category
             ("can_view_category", "Can view category"),
         ]
 
 
+# Product Model
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -73,17 +96,19 @@ class Product(models.Model):
 
     class Meta:
         permissions = [
-            # Warehouse Manager Permissions for Product
+            # Warehouse Manager Permissions
             ("can_manage_inventory", "Can manage inventory"),
             ("can_update_product_quantity", "Can update product quantity"),
 
-            # Marketing Permissions for Product
+            # Marketing Permissions
             ("can_manage_product_visibility", "Can manage product visibility"),
 
             # Viewer Permissions for Product
             ("can_view_product", "Can view product"),
         ]
 
+
+# Order Model
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -92,4 +117,13 @@ class Order(models.Model):
     status = models.CharField(max_length=50, default='Pending')
 
     def __str__(self):
-        return f"Order {self.id} by {self.user.username}"
+        return f"Order {self.id} by {self.user.email}"
+
+    class Meta:
+        permissions = [
+            # Sales Manager Permissions for Order
+            ("can_manage_orders", "Can manage orders"),
+
+            # Viewer Permissions for Order
+            ("can_view_order", "Can view order"),
+        ]

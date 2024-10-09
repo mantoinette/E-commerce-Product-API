@@ -17,7 +17,7 @@ SECRET_KEY = 'django-insecure-x*xp4r%c2g3l0_0312sk9yix4dp&r^he25qzqcs48^0tcqo+2v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # Add your domain or IP addresses here if needed
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,9 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products',
-    'rest_framework',
-    'django_filters',
+    'products',  # Your custom app containing CustomUser model
+    'rest_framework',  # Django REST framework for API development
+    'django_filters',  # For filtering querysets in the API
 ]
 
 MIDDLEWARE = [
@@ -47,7 +47,7 @@ ROOT_URLCONF = 'e_commerce_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'products', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'products', 'templates')],  # Template directory for your app
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,11 +62,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'e_commerce_api.wsgi.application'
 
-# Database
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # Database file located in the project root
     }
 }
 
@@ -77,6 +77,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,  # You can specify a minimum length for passwords
+        },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -86,24 +89,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Custom user model
-AUTH_USER_MODEL = 'products.CustomUser'  # Custom user model
 
-# Internationalization
+AUTH_USER_MODEL = 'products.CustomUser'
+
+
+# Internationalization settings
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Login Redirect URL
-LOGIN_REDIRECT_URL = 'user_dashboard'  # Redirect to user dashboard after login
-LOGOUT_REDIRECT_URL = 'login' 
+# Login and Logout Redirect URLs
+LOGIN_REDIRECT_URL = 'user_dashboard'  # Redirect URL after login
+LOGOUT_REDIRECT_URL = 'login'  # Redirect URL after logout

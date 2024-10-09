@@ -2,14 +2,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from .models import CustomUser, Product, Order
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from .serializers import UserSerializer, ProductSerializer
 from django.contrib.auth.decorators import login_required
-
+from django.views.generic import TemplateView  # Import TemplateView here
 
 # Custom pagination class
 class ProductPagination(PageNumberPagination):
@@ -70,7 +70,32 @@ class ProductDelete(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+# User Signup View
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('user_dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form}) 
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('user_dashboard')
+        else:
+            messages.error(request, "Invalid username or password.")
+    return render(request, 'login.html')
+
 # User Dashboard
+@login_required
 def user_dashboard(request):
     products = Product.objects.all()
     orders = Order.objects.filter(user=request.user)
@@ -80,6 +105,11 @@ def user_dashboard(request):
     }
     return render(request, 'user_dashboard.html', context)
 
+# Product List View
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
 # Product Detail View
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -87,6 +117,7 @@ def product_detail(request, pk):
 
 # Make Order View
 @require_POST
+@login_required
 def make_order(request):
     product_id = request.POST.get('product_id')
     quantity = int(request.POST.get('quantity'))
@@ -104,29 +135,9 @@ def make_order(request):
     messages.success(request, "Order placed successfully.")
     return redirect('user_dashboard')
 
-# User Signup View
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('user_dashboard')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/signup.html', {'form': form})
+def home(request):
+    return render(request, 'home.html')
 
-@login_required
-def user_dashboard(request):
-    products = Product.objects.all()
-    orders = Order.objects.filter(user=request.user)
-    context = {
-        'products': products,
-        'orders': orders
-    }
-    return render(request, 'user_dashboard.html', context)
-
-
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+# Product List View for TemplateView
+class ProductListView(TemplateView):
+    template_name = 'product_list.html'

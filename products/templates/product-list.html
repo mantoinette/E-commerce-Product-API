@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Available Products</h1>
+{% extends "base.html" %}
 
-    <div class="product-list">
-        {% if products %}
-            <ul>
-                {% for product in products %}
-                    <li class="product-item">
-                        <h2>{{ product.name }}</h2>
-                        <p>{{ product.description }}</p>
-                        <p>Price: ${{ product.price }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No products available at the moment.</p>
-        {% endif %}
-    </div>
-
-    <footer>
-        <a href="{% url 'user_dashboard' %}">Back to Dashboard</a>
-    </footer>
-</body>
-</html>
+{% block content %}
+    <h2>Product List</h2>
+    <ul>
+        {% for product in products %}
+            <li><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a> - ${{ product.price }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
