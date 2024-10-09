@@ -7,20 +7,15 @@ from django.conf import settings
 
 # Custom User Model
 class CustomUser(AbstractUser):
-    email = models.EmailField(
-        _('email address'),
-        unique=True,
-        validators=[EmailValidator(message="Enter a valid email address")],
-        error_messages={
-            'unique': _("A user with this email already exists."),
-        },
-    )
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('customer', 'Customer'),
+    ]
 
-    USERNAME_FIELD = 'email'  # Use email as the unique identifier for login
-    REQUIRED_FIELDS = ['username']  # Username is still required
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='customer')
 
     def __str__(self):
-        return self.email
+        return self.username
 
     class Meta:
         permissions = [
@@ -127,3 +122,7 @@ class Order(models.Model):
             # Viewer Permissions for Order
             ("can_view_order", "Can view order"),
         ]
+
+
+class SomeModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

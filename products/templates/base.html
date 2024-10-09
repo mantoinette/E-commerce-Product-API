@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Title</title>
-    {% load static %} <!-- Add this line to load static files -->
+    {% load static %} 
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="navbar">
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'user_dashboard' %}">Dashboard</a>
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'user_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a></li>
+        </ul>
     </div>
+
+    <!-- Messages Block -->
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="container">
         {% block content %}
         {% endblock %}

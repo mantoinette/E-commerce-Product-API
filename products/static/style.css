@@ -75,3 +75,21 @@ li {
     background-color: #0056b3;
     border-radius: 5px;
 }
+
+/* Style for success message */
+.alert.success {
+    color: green;
+    border: 1px solid green;
+    padding: 10px;
+    background-color: #e6ffe6;
+    margin-bottom: 15px;
+}
+
+/* Style for error message */
+.alert.error {
+    color: red;
+    border: 1px solid red;
+    padding: 10px;
+    background-color: #ffe6e6;
+    margin-bottom: 15px;
+}

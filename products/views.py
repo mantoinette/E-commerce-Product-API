@@ -9,7 +9,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from .serializers import UserSerializer, ProductSerializer
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView  # Import TemplateView here
+from django.views.generic import TemplateView
+from .forms import CustomUserCreationForm
+
 
 # Custom pagination class
 class ProductPagination(PageNumberPagination):
@@ -73,26 +75,39 @@ class ProductDelete(generics.DestroyAPIView):
 # User Signup View
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            return redirect('user_dashboard')
+            login(request, user)  # Log in the user automatically after signup
+            return redirect('login')  # Redirect to login page after signup
     else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form}) 
+        form = CustomUserCreationForm()
+    
+    return render(request, 'signup.html', {'form': form})
 
+# User Login View
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('user_dashboard')
-        else:
-            messages.error(request, "Invalid username or password.")
-    return render(request, 'login.html')
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Login successful!')
+
+                # Redirect based on user role
+                if user.role == 'admin':
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('user_dashboard')
+            else:
+                messages.error(request, 'Invalid username or password')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'login.html', {'form': form})
 
 # User Dashboard
 @login_required
@@ -104,6 +119,12 @@ def user_dashboard(request):
         'orders': orders
     }
     return render(request, 'user_dashboard.html', context)
+
+# Admin Dashboard
+@login_required
+def admin_dashboard(request):
+    # Logic for the admin dashboard can go here
+    return render(request, 'admin_dashboard.html')  # Create this template
 
 # Product List View
 def product_list(request):
@@ -142,15 +163,13 @@ def home(request):
 class ProductListView(TemplateView):
     template_name = 'product_list.html'
 
-
 def signup_view(request):
     if request.method == 'POST':
-        form = SignupForm(request.POST)
+        form = CustomUserCreationForm(request.POST)  # Use the custom form
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])  # Hash the password
-            user.save()
-            return redirect('login')
+            user = form.save()
+            login(request, user)  # Automatically log in the user
+            return redirect('user_dashboard')  # Redirect after signup
     else:
-        form = SignupForm()
-    return render(request, 'products/signup.html', {'form': form})
+        form = CustomUserCreationForm()  # Initialize with the custom form
+    return render(request, 'signup.html', {'form': form})

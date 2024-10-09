@@ -1,20 +1,11 @@
-{% extends "base.html" %}
+<!-- templates/products/login.html -->
+{% extends 'base.html' %}
 
 {% block content %}
-    <h2>Login</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
-    </form>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Render the form fields -->
+    <button type="submit">Login</button>
+</form>
 {% endblock %}
