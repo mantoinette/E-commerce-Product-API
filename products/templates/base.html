@@ -3,34 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    {% load static %} 
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>{% block title %}Page Title{% endblock %}</title>
+    {% load static %} <!-- Load static files -->
+    
+    <!-- Link to static CSS file -->
+    <link rel="stylesheet" href="{% static 'style.css' %}"> <!-- Adjust path if needed -->
 </head>
 <body>
-    <div class="navbar">
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'user_dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a></li>
-        </ul>
-    </div>
+    <div class="wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <ul>
+                <li><a href="{% url 'user-dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'product-list' %}">Products</a></li>
+                <li><a href="{% url 'make-order' %}">Order Dashboard</a></li> 
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a></li>
+            </ul>
+        </nav>
 
-    <!-- Messages Block -->
-    {% if messages %}
-    <div>
-        {% for message in messages %}
-        <div class="alert {{ message.tags }}">
-            {{ message }}
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <header>
+                <h1>{% block header %}Welcome to Our Store{% endblock %}</h1>
+            </header>
+
+            <!-- Content Section (Dynamic Content) -->
+            <section class="content-section">
+                {% block content %} 
+                <!-- This block will be overridden by individual pages' content -->
+                {% endblock %}
+            </section>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+        <!-- Right Sidebar for Insights and Options -->
+        <aside class="right-sidebar">
+            <h2>Order Insights</h2>
+            <div class="option">
+                <input type="checkbox" id="exclude-analytics">
+                <label for="exclude-analytics">Exclude from Order Reports</label>
+            </div>
+            <button class="btn">Show Order Insights</button>
+        </aside>
     </div>
 </body>
 </html>
+

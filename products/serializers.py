@@ -11,13 +11,12 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Use the set_password method to properly hash the password
+        # Create user and handle password hashing directly in create_user method
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
-            email=validated_data['email']
+            email=validated_data['email'],
+            password=validated_data['password']  # Pass the password directly
         )
-        user.set_password(validated_data['password'])  # Proper password hashing
-        user.save()
         return user
 
 # Product Serializer
@@ -25,3 +24,4 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+

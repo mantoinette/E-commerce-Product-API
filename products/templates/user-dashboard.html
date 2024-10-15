@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>Welcome, {{ request.user.username }}</h2>
+
+    <!-- Display User Orders -->
+    <h3>Your Orders</h3>
+    <ul>
+        {% for order in orders %}
+            {% if order.product %}
+                <li>{{ order.product.name }} - Quantity: {{ order.quantity }}</li>
+            {% else %}
+                <li>Unknown product - Quantity: {{ order.quantity }}</li>
+            {% endif %}
+        {% empty %}
+            <li>You have no orders.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Display Products Available for Ordering -->
+    <h3>Products</h3>
+    <ul>
+        {% for product in products %}
+            <li>
+                {{ product.name }} - {{ product.price }} USD
+                <form method="POST" action="{% url 'make-order' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="number" name="quantity" min="1" max="{{ product.stock_quantity }}" value="1" required>
+                    <button type="submit" class="btn btn-primary">Order Now</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'product-list' %}">View All Products</a>
+    <a href="{% url 'user-dashboard' %}">User Dashboard</a>  <!-- Make sure the URL matches your URL patterns -->
+{% endblock %}

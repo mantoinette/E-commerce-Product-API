@@ -25,11 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'products',  # Your custom app containing CustomUser model
+    'django.contrib.staticfiles',  
+    'products',  # Your custom app
     'rest_framework',  # Django REST framework for API development
     'django_filters',  # For filtering querysets in the API
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,8 +47,8 @@ ROOT_URLCONF = 'e_commerce_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # You can specify custom directories here if needed
-        'APP_DIRS': True,  # This should be True to enable Django to find templates in app directories
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # For global templates
+        'APP_DIRS': True,  # This allows Django to look inside app templates directories
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -58,6 +59,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 
 WSGI_APPLICATION = 'e_commerce_api.wsgi.application'
@@ -102,9 +104,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # Ensure this directory exists
 
+
+
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login and Logout Redirect URLs
-LOGIN_REDIRECT_URL = 'user_dashboard'  # Redirect URL after login
-LOGOUT_REDIRECT_URL = 'login'  # Redirect URL after logout
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'product_list'  # After login, redirect to the product list
+LOGOUT_REDIRECT_URL = 'home'  # Optional: Redirect to home after logout

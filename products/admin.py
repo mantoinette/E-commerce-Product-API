@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, Product, Category
+from .models import Order
+
 
 # Custom action for Category
 def mark_as_updated(modeladmin, request, queryset):
@@ -36,5 +38,7 @@ class CustomUserAdmin(UserAdmin):
 # Register models with the admin site
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Category, CategoryAdmin)
+admin.site.register(Category, 
+admin.site.register(Order))
+
 

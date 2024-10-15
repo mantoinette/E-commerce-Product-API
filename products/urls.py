@@ -1,29 +1,31 @@
 from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views
-from .views import signup_view ,signup, login_view
 
 urlpatterns = [
     # User management URLs
-    path('api/users/', views.UserList.as_view(), name='user-list'),
-    path('api/users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
-    path('api/users/create/', views.UserCreate.as_view(), name='user-create'),
-    path('api/users/update/<int:pk>/', views.UserUpdate.as_view(), name='user-update'),
-    path('api/users/delete/<int:pk>/', views.UserDelete.as_view(), name='user-delete'),
-    
+    path('api/v1/users/', views.UserList.as_view(), name='user-list'),
+    path('api/v1/users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
+    path('api/v1/users/create/', views.UserCreate.as_view(), name='user-create'),
+    path('api/v1/users/update/<int:pk>/', views.UserUpdate.as_view(), name='user-update'),
+    path('api/v1/users/delete/<int:pk>/', views.UserDelete.as_view(), name='user-delete'),
+
     # Product management URLs
-    path('api/products/', views.ProductList.as_view(), name='product-list'),  # List and search products
-    path('api/products/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),  # Product detail
-    path('api/products/create/', views.ProductCreate.as_view(), name='product-create'),  # Create a product
-    path('api/products/update/<int:pk>/', views.ProductUpdate.as_view(), name='product-update'),  # Update a product
-    path('api/products/delete/<int:pk>/', views.ProductDelete.as_view(), name='product-delete'),  # Delete a product
+    path('api/v1/products/', views.ProductList.as_view(), name='product-list'),  # List and search products
+    path('api/v1/products/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),  # Product detail
+    path('api/v1/products/create/', views.ProductCreate.as_view(), name='product-create'),  # Create a product
+    path('api/v1/products/update/<int:pk>/', views.ProductUpdate.as_view(), name='product-update'),  # Update a product
+    path('api/v1/products/delete/<int:pk>/', views.ProductDelete.as_view(), name='product-delete'),  # Delete a product
 
     # Authentication URLs
     path('', views.home, name='home'),  # Home view
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('signup/', views.signup, name='signup'),  # Keep this one
+    path('products/', views.product_list, name='product-list'),  # Product list view
+    path('make-order/', views.make_order, name='make-order'),  # Order creation (Updated URL name)
+    path('signup/', views.signup, name='signup'),  # Signup view
     path('login/', views.login_view, name='login'),  # Login view
-    
+
     # User dashboard
-    path('dashboard/', views.user_dashboard, name='user_dashboard'),  # Dashboard view
+    path('dashboard/', views.user_dashboard, name='user-dashboard'),  # User dashboard
+   
 ]
+
+

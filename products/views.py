@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 from .models import CustomUser, Product, Order
 from rest_framework import generics, filters
@@ -11,6 +11,7 @@ from .serializers import UserSerializer, ProductSerializer
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from .forms import CustomUserCreationForm
+
 
 
 # Custom pagination class
@@ -99,9 +100,9 @@ def login_view(request):
 
                 # Redirect based on user role
                 if user.role == 'admin':
-                    return redirect('admin_dashboard')
+                    return redirect('admin-dashboard')
                 else:
-                    return redirect('user_dashboard')
+                    return redirect('user-dashboard')
             else:
                 messages.error(request, 'Invalid username or password')
     else:
@@ -118,23 +119,23 @@ def user_dashboard(request):
         'products': products,
         'orders': orders
     }
-    return render(request, 'user_dashboard.html', context)
+    return render(request, 'user-dashboard.html', context)
 
 # Admin Dashboard
 @login_required
 def admin_dashboard(request):
     # Logic for the admin dashboard can go here
-    return render(request, 'admin_dashboard.html')  # Create this template
+    return render(request, 'admin-dashboard.html')  # Create this template
 
 # Product List View
 def product_list(request):
     products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+    return render(request, 'product-list.html', {'products': products})
 
 # Product Detail View
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'product_detail.html', {'product': product})
+    return render(request, 'product-detail.html', {'product': product})
 
 # Make Order View
 @require_POST
@@ -146,7 +147,7 @@ def make_order(request):
 
     if quantity > product.stock_quantity:
         messages.error(request, "Not enough stock available.")
-        return redirect('product_detail', pk=product_id)
+        return redirect('product-detail', pk=product_id)
 
     # Create an order
     order = Order.objects.create(user=request.user, product=product, quantity=quantity)
@@ -154,14 +155,14 @@ def make_order(request):
     product.stock_quantity -= quantity
     product.save()
     messages.success(request, "Order placed successfully.")
-    return redirect('user_dashboard')
+    return redirect('user-dashboard')
 
 def home(request):
     return render(request, 'home.html')
 
 # Product List View for TemplateView
 class ProductListView(TemplateView):
-    template_name = 'product_list.html'
+    template_name = 'product-list.html'
 
 def signup_view(request):
     if request.method == 'POST':
@@ -169,7 +170,36 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Automatically log in the user
-            return redirect('user_dashboard')  # Redirect after signup
+            return redirect('user-dashboard')  # Redirect after signup
     else:
         form = CustomUserCreationForm()  # Initialize with the custom form
     return render(request, 'signup.html', {'form': form})
+
+
+# User Login View
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Login successful!')
+
+                # Redirect based on user role
+                if user.role == 'admin':
+                    return redirect('admin-dashboard')
+                else:
+                    return redirect('user-dashboard')  # Change this line
+                
+            else:
+                messages.error(request, 'Invalid username or password')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'login.html', {'form': form})
+
+
+
