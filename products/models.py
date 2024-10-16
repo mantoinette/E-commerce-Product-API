@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+
 # Custom User Model
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
@@ -32,9 +33,10 @@ class CustomUser(AbstractUser):
             ("can_update_product_quantity", "Can update product quantity"),
         ]
 
+
 # Category Model
 class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)  # Unique constraint to avoid duplicate names
+    name = models.CharField(max_length=255, unique=True, verbose_name="Category Name")  # Unique constraint
     description = models.TextField(blank=True)
 
     def __str__(self):
@@ -45,6 +47,7 @@ class Category(models.Model):
             ("can_view_category", "Can view category"),
         ]
 
+
 # Product Model
 class Product(models.Model):
     name = models.CharField(max_length=255)
@@ -52,7 +55,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     stock_quantity = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # Allow null images
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -60,13 +63,21 @@ class Product(models.Model):
 
     def reduce_stock(self, quantity):
         """Reduces the stock if there is enough quantity."""
-        if quantity < 0:
-            raise ValidationError("Quantity must be positive.")
+        if quantity <= 0:
+            raise ValidationError("Quantity must be a positive integer.")
         if self.stock_quantity >= quantity:
             self.stock_quantity -= quantity
             self.save()
             return True
-        return False
+        raise ValidationError("Not enough stock available.")
+
+    def get_stock_status(self):
+        """Returns the availability status of the product."""
+        return self.stock_quantity > 0
+
+    def get_image_url(self):
+        """Returns the URL of the product image."""
+        return self.image.url if self.image else None
 
     class Meta:
         permissions = [
@@ -75,6 +86,7 @@ class Product(models.Model):
             ("can_manage_product_visibility", "Can manage product visibility"),
             ("can_view_product", "Can view product"),
         ]
+
 
 # Order Model
 class Order(models.Model):
@@ -96,6 +108,7 @@ class Order(models.Model):
         return f"Order {self.id} by {self.user.username}"
 
     def clean(self):
+        """Validates the quantity before saving the order."""
         if self.quantity <= 0:
             raise ValidationError('Quantity must be a positive integer.')
 
@@ -108,7 +121,5 @@ class Order(models.Model):
             ("can_manage_orders", "Can manage orders"),
             ("can_view_order", "Can view order"),
         ]
+        ordering = ['-order_date']  # Default ordering by order date
 
-# Additional model to relate users to another table
-class SomeModel(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

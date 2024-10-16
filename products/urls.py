@@ -15,11 +15,14 @@ urlpatterns = [
     path('api/v1/products/create/', views.ProductCreate.as_view(), name='product-create'),  # Create a product
     path('api/v1/products/update/<int:pk>/', views.ProductUpdate.as_view(), name='product-update'),  # Update a product
     path('api/v1/products/delete/<int:pk>/', views.ProductDelete.as_view(), name='product-delete'),  # Delete a product
+    
 
     # Authentication URLs
     path('', views.home, name='home'),  # Home view
     path('products/', views.product_list, name='product-list'),  # Product list view
     path('make-order/', views.make_order, name='make-order'),  # Order creation (Updated URL name)
+    path('edit-order/<int:order_id>/', views.edit_order, name='edit-order'),
+    path('delete-order/<int:order_id>/', views.delete_order, name='delete-order'),
     path('signup/', views.signup, name='signup'),  # Signup view
     path('login/', views.login_view, name='login'),  # Login view
 
@@ -27,5 +30,4 @@ urlpatterns = [
     path('dashboard/', views.user_dashboard, name='user-dashboard'),  # User dashboard
    
 ]
-
 

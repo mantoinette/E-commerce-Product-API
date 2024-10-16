@@ -11,6 +11,10 @@ from .serializers import UserSerializer, ProductSerializer
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from .forms import CustomUserCreationForm
+from .forms import OrderForm
+
+
+
 
 
 
@@ -176,6 +180,7 @@ def signup_view(request):
     return render(request, 'signup.html', {'form': form})
 
 
+
 # User Login View
 def login_view(request):
     if request.method == 'POST':
@@ -200,6 +205,39 @@ def login_view(request):
         form = AuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
+
+
+def edit_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('user-dashboard')
+    else:
+        form = OrderForm(instance=order)
+    return render(request, 'edit_order.html', {'form': form, 'order': order})
+
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        order.delete()
+        return redirect('user-dashboard')
+    return render(request, 'delete_order.html', {'order': order})
+
+def product_list(request):
+    products = Product.objects.all()  # Assuming you have a Product model
+    return render(request, 'product-list.html', {'products': products})
+
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    return render(request, 'product_detail.html', {'product': product})
+
+
+
+
+
+
 
 
 

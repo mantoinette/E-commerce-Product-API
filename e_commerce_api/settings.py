@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',  
     'products',  # Your custom app
     'rest_framework',  # Django REST framework for API development
-    'django_filters',  # For filtering querysets in the API
+    'django_filters',  # For filtering querysets in the API 'crispy_forms',
+
 ]
 
 
