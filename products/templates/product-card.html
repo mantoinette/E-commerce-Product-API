@@ -1,0 +1,13 @@
+{% load static %}  <!-- Add this line at the top -->
+
+<div class="card" style="width: 18rem; margin: 10px;">
+    <img src="{% static 'product_images/pc1.jpg' %}" class="card-img-top" alt="Lenovo ThinkPad X1 Carbon">
+    <div class="card-body text-center">
+      <h5 class="card-title">{{ product.name }}</h5>
+      <p class="card-text">{{ product.description }}</p>
+      <p><strong>Stock Quantity:</strong> {{ product.stock_quantity }}</p>
+      <p><strong>Price:</strong> <span>RWF{{ product.price|floatformat:2 }}</span></p>
+      <a href="{% url 'product-detail' product.id %}" class="btn btn-primary">View Product</a>
+    </div>
+</div>
+

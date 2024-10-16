@@ -216,22 +216,32 @@ def edit_order(request, order_id):
             return redirect('user-dashboard')
     else:
         form = OrderForm(instance=order)
-    return render(request, 'edit_order.html', {'form': form, 'order': order})
+    return render(request, 'edit-order.html', {'form': form, 'order': order})
 
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
         order.delete()
         return redirect('user-dashboard')
-    return render(request, 'delete_order.html', {'order': order})
+    return render(request, 'delete-order.html', {'order': order})
 
 def product_list(request):
-    products = Product.objects.all()  # Assuming you have a Product model
+    # Query all products from the database
+    products = Product.objects.all()
+    
+    # Render the product list page with the products
     return render(request, 'product-list.html', {'products': products})
 
-def product_detail(request, id):
+def productdetail(request, id):
     product = get_object_or_404(Product, id=id)
-    return render(request, 'product_detail.html', {'product': product})
+    return render(request, 'product-detail.html', {'product': product})
+
+def get_image_url(self):
+    return self.image.url if self.image else None
+
+
+
+
 
 
 
