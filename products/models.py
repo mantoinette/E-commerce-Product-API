@@ -76,7 +76,7 @@ class Product(models.Model):
 
     def get_image_url(self):
         """Returns the URL of the product image"""
-        return self.image.url if self.image else None
+        return self.image.url if self.image else '/static/default_image.jpg'
 
     class Meta:
         permissions = [
