@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home Page{% endblock %}
+{% block title %}Products Page{% endblock %}
 
 {% block header %}
-    <h1>Welcome to the Product Management System</h1>
+    <h1>Welcome to the Elo Antony's Home</h1>
 {% endblock %}
 
 {% block content %}
+<div class="products-page">
     <h2>Hello, {{ request.user.username }}</h2>
     
     <!-- Display User Orders -->
@@ -41,4 +42,5 @@
     </ul>
 
     <a href="{% url 'product-list' %}">View All Products</a>
+</div>
 {% endblock %}

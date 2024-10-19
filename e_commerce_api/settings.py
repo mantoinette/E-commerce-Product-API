@@ -5,12 +5,12 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-...'
+SECRET_KEY = 'django-insecure-...'  # Make sure to store this in environment variables in production
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Switch to False in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # In production, add the domain or IP address here
 
 # Application definition
 INSTALLED_APPS = [
@@ -20,8 +20,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  
-    'products', 
+    'rest_framework',  # Django REST Framework for building APIs
+    'products',  # Your custom app for products
 ]
 
 MIDDLEWARE = [
@@ -34,13 +34,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 ROOT_URLCONF = 'e_commerce_api.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Ensure this is where your templates are stored
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -55,16 +54,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'e_commerce_api.wsgi.application'
 
-# Database
+# Database settings (default is SQLite, which is good for development)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # Path to SQLite file
     }
 }
 
-# Custom user model (if applicable)
-AUTH_USER_MODEL = 'products.CustomUser'  # Custom user model (adjust as necessary)
+# Custom user model (adjust based on your app)
+AUTH_USER_MODEL = 'products.CustomUser'  # Make sure CustomUser model exists in products app
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -82,29 +81,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# Localization settings
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
-# Additional locations of static files
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Ensure static files are served from 'static' folder
+# Where additional static files are located
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Add static directory to collect your assets
+]
 
-# Media files (Uploaded user files)
-MEDIA_URL = '/media/'  # Set MEDIA_URL to a unique value
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Use a separate folder for media files
+# Media files (for user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Where user-uploaded files will be stored
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Redirect settings
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'product-list'
-LOGOUT_REDIRECT_URL = 'home'
+# Authentication redirect settings
+LOGIN_URL = 'login'  # URL to login page
+LOGIN_REDIRECT_URL = 'product-list'  # URL to redirect to after successful login
+LOGOUT_REDIRECT_URL = 'home'  # URL to redirect after logout
