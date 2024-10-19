@@ -4,22 +4,44 @@
     Sign Up
 {% endblock %}
 
-{% block header %}
-    Sign Up
-{% endblock %}
-
 {% block content %}
-    <div class="signup-container">
-        <h2>Create Your Account</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }} <!-- Renders form fields as paragraphs -->
-            
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>
-
-        <!-- Optional: Link to login if already registered -->
-        <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+<div class="container mt-5">
+    <!-- Welcome section with background and padding -->
+    <div class="text-center mb-4">
+        <h2 class="display-4">Welcome to Our Store!</h2>
+        <p class="lead">Join us and get access to exclusive deals and offers!</p>
     </div>
-{% endblock %}
 
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Card container for the sign-up form -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white text-center">
+                    <h3>Create Your Account</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Signup form with Bootstrap form-group styling -->
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Form fields (automatically rendered by Django with as_p) -->
+                        {{ form.as_p }}
+                        
+                        <!-- Submit button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-block">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer for additional links -->
+                <div class="card-footer text-center">
+                    <p>Already have an account? 
+                        <a href="{% url 'login' %}" class="text-info">Log in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -89,11 +89,14 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Login successful!')
-                return redirect('admin-dashboard' if user.role == 'admin' else 'user-dashboard')
+                # Redirect to the appropriate dashboard based on user role
+                return redirect('admin-dashboard' if getattr(user, 'role', None) == 'admin' else 'user-dashboard')
             else:
                 messages.error(request, 'Invalid username or password')
     else:
         form = AuthenticationForm()
+
+    # Ensure the correct path to the login template
     return render(request, 'login.html', {'form': form})
 
 # User Logout View
@@ -193,3 +196,6 @@ def product_details(request, id):
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'product-list.html', {'products': products})
+
+
+

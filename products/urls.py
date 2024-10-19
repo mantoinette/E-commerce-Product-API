@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.urls import path
 
 urlpatterns = [
     # ================== API - User Management URLs ==================
@@ -26,7 +28,7 @@ urlpatterns = [
     path('api/v1/orders/delete/<int:pk>/', views.OrderDetail.as_view(), name='delete-order'),  
 
     # ================== Frontend - Authentication and Views ==================
-    path('', views.home, name='home'),  # Home view
+    path('', views.home, name='home'),
     path('products/', views.product_list, name='product-list'),  
     path('product/<int:id>/', views.product_details, name='product-details'),
     path('signup/', views.signup_view, name='signup'), 
@@ -36,7 +38,10 @@ urlpatterns = [
     # ================== Frontend - Order Management ==================
     path('order/create/', views.make_order, name='make-order'), 
     path('order/edit/<int:order_id>/', views.edit_order, name='edit-order'), 
-    path('order/delete/<int:order_id>/', views.delete_order, name='delete-order'),  
+    path('order/delete/<int:order_id>/', views.delete_order, name='delete-order'), 
+    path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+   
+   
 
     # ================== Frontend - User Dashboard ==================
     path('dashboard/', views.user_dashboard, name='user-dashboard'),  
